@@ -1,0 +1,4 @@
+{
+    "exec": "babel-node src/server.js",
+    "exec": "npx babel-node src/server.js"
+}
