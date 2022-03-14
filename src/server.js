@@ -23,10 +23,13 @@ const wss = new WebSocket.Server({ server });
 
 // WebSocket is the connection between server and browser
 // socket of server.js represents the browser that just connected 
-function handleConnection(socket) {
-    // this socket is communication with front-end in real time
-    console.log(socket);
-}
-wss.on("connection", handleConnection);
+// this socket is communication with front-end in real time
+wss.on("connection", (socket) => {
+    console.log("Connected to Browser ");
+    socket.on("close", () => console.log("Disconnected from the Browser "));
+    // using method on the socket not on the wss and server
+    // this method gives me direct access on the socket
+    socket.send("hello!");
+});
 
 server.listen(3000, handleListen);
