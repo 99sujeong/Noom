@@ -27,8 +27,12 @@ const wss = new WebSocket.Server({ server });
 wss.on("connection", (socket) => {
     console.log("Connected to Browser ");
     socket.on("close", () => console.log("Disconnected from the Browser "));
+    socket.on("message", (message) => {
+        console.log(message.toString('utf-8'));
+    });
     // using method on the socket not on the wss and server
     // this method gives me direct access on the socket
+    // message from BE to FE
     socket.send("hello!");
 });
 
