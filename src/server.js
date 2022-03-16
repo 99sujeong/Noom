@@ -21,19 +21,20 @@ const handleListen = () => console.log('Listening on http://localhost:3000');
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+function onSocketClose() {
+    console.log("Disconnected from the Browser ");
+}
+
 // WebSocket is the connection between server and browser
 // socket of server.js represents the browser that just connected 
 // this socket is communication with front-end in real time
 wss.on("connection", (socket) => {
     console.log("Connected to Browser ");
-    socket.on("close", () => console.log("Disconnected from the Browser "));
+    socket.on("close", onSocketClose);
     socket.on("message", (message) => {
-        console.log(message.toString('utf-8'));
+        // socket send back the msg to the user ==> it's a chat with ourselves!!
+        socket.send(message.toString());
     });
-    // using method on the socket not on the wss and server
-    // this method gives me direct access on the socket
-    // message from BE to FE
-    socket.send("hello!");
 });
 
 server.listen(3000, handleListen);
