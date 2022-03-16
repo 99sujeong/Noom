@@ -4,8 +4,6 @@ import express from "express";
 
 const app = express();
 
-//console.log("hello");
-
 app.set("view engine", "pug");
 app.set("views", __dirname + "/views");
 
@@ -32,11 +30,18 @@ const sockets = [];
 // this socket is communication with front-end in real time
 wss.on("connection", (socket) => {
     sockets.push(socket);
+    socket["nickname"] = "Anon";
     console.log("Connected to Browser ");
     socket.on("close", onSocketClose);
-    socket.on("message", (message) => {
-        // socket send back the msg to the user ==> it's a chat each other
-        sockets.forEach((aSocket) => aSocket.send(message.toString()));
+    socket.on("message", (msg) => {
+        // string -> javasrcipt obj
+        const message = JSON.parse(msg);
+        switch (message.type) {
+            case "new_message":
+                sockets.forEach((aSocket) => aSocket.send(`${socket.nickname}: ${message.payload}`));
+            case "nickname":
+                socket["nickname"] = message.payload;
+        }
     });
 });
 
