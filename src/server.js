@@ -25,15 +25,18 @@ function onSocketClose() {
     console.log("Disconnected from the Browser ");
 }
 
+const sockets = [];
+
 // WebSocket is the connection between server and browser
 // socket of server.js represents the browser that just connected 
 // this socket is communication with front-end in real time
 wss.on("connection", (socket) => {
+    sockets.push(socket);
     console.log("Connected to Browser ");
     socket.on("close", onSocketClose);
     socket.on("message", (message) => {
-        // socket send back the msg to the user ==> it's a chat with ourselves!!
-        socket.send(message.toString());
+        // socket send back the msg to the user ==> it's a chat each other
+        sockets.forEach((aSocket) => aSocket.send(message.toString()));
     });
 });
 
