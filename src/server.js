@@ -1,5 +1,5 @@
 import http from "http";
-import WebSocket from "ws";
+import SocketIO from "socket.io";
 import express from "express";
 
 const app = express();
@@ -13,16 +13,17 @@ app.get("/*", (_, res) => res.redirect("/"));
 
 const handleListen = () => console.log('Listening on http://localhost:3000');
 
-//  create a ws server on top of the http server. 
-// -> localhost can process both http and ws requests on the same port
-// == our server supports http protocol connections or ws protocol connection
-const server = http.createServer(app);
+const httpServer = http.createServer(app);
+// socket.io is not a websocket implementation
+// install socket.io in BE
+const wsServer = SocketIO(httpServer);
+
+wsServer.on("connection", (socket) => {
+    console.log(socket);
+});
+
+/* websocket code
 const wss = new WebSocket.Server({ server });
-
-function onSocketClose() {
-    console.log("Disconnected from the Browser ");
-}
-
 const sockets = [];
 
 // WebSocket is the connection between server and browser
@@ -43,6 +44,6 @@ wss.on("connection", (socket) => {
                 socket["nickname"] = message.payload;
         }
     });
-});
+}); */
 
-server.listen(3000, handleListen);
+httpServer.listen(3000, handleListen);
